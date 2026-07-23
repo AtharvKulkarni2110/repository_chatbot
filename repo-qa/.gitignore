@@ -1,0 +1,9 @@
+chroma_db/
+*.pkl
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.env
+.DS_Store

@@ -1,0 +1,8 @@
+langchain
+langchain-community
+langchain-chroma
+langchain-huggingface
+langchain-anthropic
+chromadb
+scikit-learn
+tree-sitter-language-pack

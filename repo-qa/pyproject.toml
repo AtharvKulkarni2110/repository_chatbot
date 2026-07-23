@@ -1,0 +1,25 @@
+[project]
+name = "repo-qa"
+version = "0.1.0"
+description = "Read-only Q&A over a local codebase using LangChain RAG"
+requires-python = ">=3.10"
+dependencies = [
+    "langchain",
+    "langchain-community",
+    "langchain-chroma",
+    "langchain-huggingface",
+    "langchain-anthropic",
+    "chromadb",
+    "scikit-learn",
+    "tree-sitter-language-pack",
+]
+
+[project.scripts]
+repo-qa = "repo_qa.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
