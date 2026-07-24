@@ -16,7 +16,7 @@ from repo_qa.config import settings
 from repo_qa.ingestion.loader import load_repo
 from repo_qa.ingestion.chunker import chunk_documents
 from repo_qa.embeddings.provider import get_embedding_function
-from repo_qa.vectorstore.chroma_store import build_index, load_index
+from repo_qa.vectorstore.chroma_store import build_index, load_index, EmbeddingMismatchError
 from repo_qa.retrieval.retriever import retrieve
 from repo_qa.generation.answerer import llm_available, generate_answer, format_context
 
@@ -50,12 +50,12 @@ def cmd_query(args):
         print(f"[{i}] {doc.metadata.get('source', 'unknown')}  (distance: {score:.3f}, lower = more similar)")
 
     if llm_available():
-        print("\nGenerating answer with Claude...\n")
+        print(f"\nGenerating answer with {settings.llm_provider.title()} ({settings.llm_model_name})...\n")
         answer = generate_answer(args.question, results)
         print("ANSWER:\n" + answer)
     else:
         print(
-            "\n[No ANTHROPIC_API_KEY set - skipping LLM answer step.]\n"
+            f"\n[No API key set for {settings.llm_provider} - skipping LLM answer step.]\n"
             "Retrieved context that would be sent to the LLM:\n"
         )
         print(format_context(results))
@@ -79,7 +79,11 @@ def main():
     p_query.set_defaults(func=cmd_query)
 
     args = parser.parse_args()
-    args.func(args)
+    try:
+        args.func(args)
+    except EmbeddingMismatchError as e:
+        print(f"\nError: {e}")
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

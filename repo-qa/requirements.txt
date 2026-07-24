@@ -3,6 +3,8 @@ langchain-community
 langchain-chroma
 langchain-huggingface
 langchain-anthropic
+langchain-google-genai
 chromadb
 scikit-learn
 tree-sitter-language-pack
+python-dotenv

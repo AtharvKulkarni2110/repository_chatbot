@@ -46,6 +46,21 @@ def get_embedding_function(persist_dir: str, force_offline: bool = False) -> Emb
     return TfidfEmbeddings(persist_dir)
 
 
+def get_embedding_identifier(embedding_fn: Embeddings) -> str:
+    """
+    A stable string identifying which embedding scheme produced a set of
+    vectors - e.g. "jinaai/jina-embeddings-v2-base-code" or "tfidf-offline".
+
+    Used by vectorstore/chroma_store.py to detect and refuse to mix
+    incompatible embeddings in one Chroma collection (see docs/concepts.md,
+    "Embedding mismatch guard").
+    """
+    if isinstance(embedding_fn, TfidfEmbeddings):
+        return "tfidf-offline"
+    model_name = getattr(embedding_fn, "model_name", None)
+    return model_name or f"unknown:{type(embedding_fn).__name__}"
+
+
 class TfidfEmbeddings(Embeddings):
     """
     TF-IDF based embedding (offline fallback).

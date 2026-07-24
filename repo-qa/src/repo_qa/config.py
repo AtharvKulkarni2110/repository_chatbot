@@ -13,6 +13,10 @@ models without touching code, etc.) without editing this file.
 
 import os
 from dataclasses import dataclass, field
+from dotenv import load_dotenv
+
+# Load .env file if it exists
+load_dotenv()
 
 
 def _env_int(name: str, default: int) -> int:
@@ -59,7 +63,12 @@ class Settings:
     default_top_k: int = _env_int("REPO_QA_TOP_K", 5)
 
     # --- Generation ---
-    llm_model_name: str = _env_str("REPO_QA_LLM_MODEL", "claude-sonnet-4-6")
+    # Provider is swappable: "google" (Gemini, free tier available) or
+    # "anthropic" (Claude). Free-tier boundaries on any provider shift often -
+    # verify current pricing/quotas before relying on this long-term.
+    # Google: https://ai.google.dev/pricing | Anthropic: https://www.anthropic.com/pricing
+    llm_provider: str = _env_str("REPO_QA_LLM_PROVIDER", "google")
+    llm_model_name: str = _env_str("REPO_QA_LLM_MODEL", "gemini-2.0-flash")
     llm_max_tokens: int = _env_int("REPO_QA_LLM_MAX_TOKENS", 1000)
 
 
